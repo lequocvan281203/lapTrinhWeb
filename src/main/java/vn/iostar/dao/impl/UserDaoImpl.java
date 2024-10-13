@@ -31,11 +31,14 @@ public class UserDaoImpl extends DBconnectMySQL implements IUserDao {
 				list.add(
 						new UserModel(
 								rs.getInt("id"), 
-								rs.getString("username"), 
-								rs.getString("password"), 
-								rs.getString("email"), 
-								rs.getString("fullname"), 
-								rs.getString("images")
+			                    rs.getString("username"), 
+			                    rs.getString("email"), 
+			                    rs.getString("password"), 
+			                    rs.getString("fullname"), 
+			                    rs.getString("images"), 
+			                    rs.getString("phone"),      // Lấy giá trị của 'phone'
+			                    rs.getInt("roleid"),        // Lấy giá trị của 'roleid'
+			                    rs.getDate("createDate")
 								)
 						);//add vào
 			}
@@ -48,13 +51,34 @@ public class UserDaoImpl extends DBconnectMySQL implements IUserDao {
 
 	@Override
 	public UserModel findById(int id) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT * FROM users WHERE id = ? ";
+		try {
+			conn = super.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				UserModel user = new UserModel();
+				user.setId(rs.getInt("id"));
+				user.setEmail(rs.getString("email"));
+				user.setUsername(rs.getString("username"));
+				user.setFullname(rs.getString("fullname"));
+				user.setPassword(rs.getString("password"));
+				user.setImages(rs.getString("images"));
+				user.setRoleid(Integer.parseInt(rs.getString("roleid")));
+				user.setPhone(rs.getString("phone"));
+				user.setCreateDate(rs.getDate("createDate"));
+				return user;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}	
 		return null;
 	}
 
 	@Override
 	public void insert(UserModel user) {
-		String sql = "INSERT INTO users(id, username, email, pasword, images, fullname) VALUE (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO users(id, username, email, pasword, images, fullname, phone, roleid, createDate) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try {
 			conn = super.getConnection();
@@ -76,20 +100,51 @@ public class UserDaoImpl extends DBconnectMySQL implements IUserDao {
 		
 	}
 	
-	public static void main(String[] args) {
-		UserDaoImpl userDao = new UserDaoImpl();
-		//System.out.println(userDao.findOne(1));
-		List<UserModel> list = userDao.findAll();
-		
-		for(UserModel user : list) {
-			System.out.println(user);
-		}
-	}
+//	public static void main(String[] args) {
+//		UserDaoImpl userDao = new UserDaoImpl();
+//		//System.out.println(userDao.findOne(1));
+//		List<UserModel> list = userDao.findAll();
+//		
+//		for(UserModel user : list) {
+//			System.out.println(user);
+//		}
+//	}
 
 	@Override
 	public UserModel findByUserName(String username) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT * FROM users WHERE username = ? ";
+		try {
+			conn = super.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, username);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				UserModel user = new UserModel();
+				user.setId(rs.getInt("id"));
+				user.setEmail(rs.getString("email"));
+				user.setUsername(rs.getString("username"));
+				user.setFullname(rs.getString("fullname"));
+				user.setPassword(rs.getString("password"));
+				user.setImages(rs.getString("images"));
+				user.setRoleid(Integer.parseInt(rs.getString("roleid")));
+				user.setPhone(rs.getString("phone"));
+				user.setCreateDate(rs.getDate("createDate"));
+				return user;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}	
 		return null;
+	}
+	
+	//tess
+	public static void main(String[] args) {
+		try {
+			IUserDao userDao = new UserDaoImpl();
+			System.out.println(userDao.findById(1));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
