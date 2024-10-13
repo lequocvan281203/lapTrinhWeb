@@ -23,11 +23,16 @@ public class DBconnectMySQL {
 
 	// Test chương trình. Kích phải chuột chọn run as->java application
 	public static void main(String[] args) {
-		try {
-			new DBconnectMySQL();
-			System.out.println(DBconnectMySQL.getConnection());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    try {
+	        Connection conn = DBconnectMySQL.getConnection();
+	        if (conn != null) {
+	            System.out.println("Kết nối thành công!");
+	        } else {
+	            System.out.println("Kết nối thất bại!");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
+
 }
